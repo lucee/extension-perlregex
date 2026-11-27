@@ -33,12 +33,14 @@ Works like Lucee core (LDEV-6516): every code change gets its own version number
 `extension.version.qualifier` (`-SNAPSHOT`).
 
 * **Every push to `main`** (a merged PR or a direct commit) takes the highest existing build of the base, from the git tags,
-  Maven Central and the Central snapshot repository, adds 1, builds, tests, publishes that version (e.g. `1.0.0.N-SNAPSHOT`)
-  to the [Central snapshot repository](https://central.sonatype.com/repository/maven-snapshots/) and creates the tag `1.0.0.N`.
+  Maven Central, the Central snapshot repository and [maven.lucee-services.com](https://maven.lucee-services.com/), adds 1,
+  builds, tests, publishes that version (e.g. `1.0.0.N-SNAPSHOT`) to maven.lucee-services.com and creates the tag `1.0.0.N`.
+  Snapshots, ALPHA, BETA and RC never go to Maven Central.
 * Pushes run one after another (workflow concurrency queue), so two quick merges get two different numbers.
 * PR builds, forks and runs without the deploy secrets build and test `1.0.0.0-SNAPSHOT` and never use up a number.
 * **Release candidate or final release:** run the workflow by hand (Actions > Java CI Combined > Run workflow), choose the branch
   `main`, tick `deploy` and pick `RC`, `BETA`, `ALPHA` or `release` as qualifier. That publishes the current code once with the
-  next build number (e.g. `1.0.0.N-RC` or `1.0.0.N`) to Maven Central and creates a GitHub release with the `.lex` files,
-  without a commit; the pom keeps `-SNAPSHOT`.
+  next build number (e.g. `1.0.0.N-RC` or `1.0.0.N`), without a commit; the pom keeps `-SNAPSHOT`. ALPHA, BETA and RC go to
+  maven.lucee-services.com and as a GitHub pre-release, not Maven Central. A final also goes to Maven Central and creates a
+  GitHub release with the `.lex` files.
 * To start a new line change `extension.version.base`.
